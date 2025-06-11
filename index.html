@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Comandos del NPC</title>
+<style>
+  :root {
+    --primary-color: #ff4655;
+    --secondary-color: #0f1923;
+    --accent-color: #ece8e1;
+    --text-color: #f8f8f8;
+    --highlight-color: #ff4655;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(-45deg, #1e3c72, #2a5298, #0f2027, #2c5364);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    color: var(--text-color);
+    overflow: auto;
+  }
+
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .container {
+    width: 100%;
+    max-width: 600px;
+    height: auto; /* Permitir que crezca */
+    max-height: 91vh; /* Limitar altura máxima para evitar que se salga de la pantalla */
+    overflow-y: auto; /* Permitir scroll interno */
+    margin: 10px auto;
+    background: rgba(15, 25, 35, 0.85);
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    overflow-x: hidden;
+  }
+  /* Estilo para navegadores basados en WebKit (Chrome, Edge, Opera) */
+  .container::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+  }
+
+  .container::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 8px;
+    transition: background 0.3s ease;
+  }
+
+  .container::-webkit-scrollbar-thumb:hover {
+    background: #ff5f6e;
+  }
+  .title {
+    padding: 12px 15px;
+    font-size: 18px;
+    font-weight: bold;
+    background: linear-gradient(90deg, var(--primary-color), rgba(255, 70, 85, 0.2));
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #commandList {
+    padding: 8px 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  @media (min-width: 480px) {
+    #commandList {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .command {
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    animation: fadeIn 0.5s ease-out;
+    border: 1px solid rgba(236, 232, 225, 0.05);
+  }
+
+  .command:hover {
+    background: rgba(255, 70, 85, 0.1);
+  }
+
+  .command-name {
+    font-weight: bold;
+    color: var(--primary-color);
+    font-size: 16px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .command-desc {
+    font-size: 13px;
+    color: var(--accent-color);
+    line-height: 1.4;
+    opacity: 0.9;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    color: var(--accent-color);
+    font-size: 14px;
+  }
+
+  .pagination button {
+    background: var(--primary-color);
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s ease;
+  }
+
+  .pagination button:hover {
+    background: #ff5f6e;
+  }
+  .command:nth-child(1) { animation-delay: 0.1s; }
+  .command:nth-child(2) { animation-delay: 0.2s; }
+  .command:nth-child(3) { animation-delay: 0.3s; }
+  .command:nth-child(4) { animation-delay: 0.4s; }
+  .command:nth-child(5) { animation-delay: 0.5s; }
+  .command:nth-child(6) { animation-delay: 0.6s; }
+  .command:nth-child(7) { animation-delay: 0.7s; }
+  .command:nth-child(8) { animation-delay: 0.8s; }
+  .command:nth-child(9) { animation-delay: 0.9s; }
+  .command:nth-child(10) { animation-delay: 1s; }
+  
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="title">🎮 Comandos del NPC</div>
+  <div id="commandList"></div>
+  <div id="pagination" class="pagination">
+    <button onclick="prevPage()">⬅️</button>
+    <span id="pageIndicator">1 / X</span>
+    <button onclick="nextPage()">➡️</button>
+  </div>
+</div>
+
+<script>
+    const comandos = [
+    { name: "!controlarnpc", desc: "Control total, Por 90 segundos, solo tus comandos afectarán al Jugador Controlado." },
+    { name: "!pusha", desc: "Push A - El NPC debe avanzar hacia A sin detenerse" },
+    { name: "!pushb", desc: "Push B - El NPC empuja B con todo el poder" },
+    { name: "!rushmid", desc: "Rush Mid - Entrada rápida y sin miedo por medio" },
+    { name: "!modoloco", desc: "Modo Loco - Corre y dispara sin apuntar, comportamiento errático" },
+    { name: "!ace", desc: "ACE - Intento de hacer un ACE. No puede frenar" },
+    { name: "!peekya", desc: "Peek Ya! - Forzar al NPC a asomarse de inmediato" },
+    { name: "!jugarsafe", desc: "Jugar Safe - Modo defensivo, mantener posición" },
+    { name: "!guardar", desc: "Guardar - El NPC debe esconderse y guardar su arma" },
+    { name: "!sentinela", desc: "Sentinela - Mantente cubriendo una zona sin moverte" },
+    { name: "!evadir", desc: "Evadir - El NPC esquiva enfrentamientos, evita tiros" },
+    { name: "!backoff", desc: "Backoff - Retrocede al ser presionado" },
+    { name: "!eco", desc: "Eco - Ronda sin comprar armas grandes" },
+    { name: "!fullbuy", desc: "Full Buy - Compra todo: rifle, escudo, utilidades" },
+    { name: "!forzar", desc: "Forzar - Compra con lo que tenga, incluso si es mala idea" },
+    { name: "!guardian", desc: "Guardian - Compra Guardian, precisión por encima de spam" },
+    { name: "!solofaka", desc: "Solo Faka - Solo puede usar cuchillo esa ronda" },
+    { name: "!ultya", desc: "Ultear Ya! - Activar la definitiva sin importar la situación" },
+    { name: "!npcbait", desc: "NPC Bait - El NPC actúa como cebo para el equipo" },
+    { name: "!npcigl", desc: "NPC IGL - El NPC intenta liderar la partida" },
+    { name: "!mutetotal", desc: "Mute Total - El NPC no hace nada por 10 segundos" },
+    { name: "!soloemotes", desc: "Solo emotes - Solo puede caminar y hacer gestos (teabag, miradas)" },
+    { name: "!sigilo", desc: "Sigilo - Movimiento solo caminando, sin hacer ruido" },
+    { name: "!randomgun", desc: "Random Gun - Compra un arma aleatoria" },
+    { name: "!spinshot", desc: "Spin Shot - Debe girar 360° y disparar al terminar" },
+    { name: "!dispararaire", desc: "Disparar al Aire - Dispara al cielo durante 3 segundos" },
+    { name: "!droparma", desc: "Dropear Arma - Suelta su arma principal inmediatamente" },
+    { name: "!saltodisparo", desc: "Salto Disparo - Solo puede disparar mientras está en el aire" },
+    { name: "!duelo", desc: "Duelo 1vs1 - Busca un 1vs1 inmediato, no importa el riesgo" },
+    { name: "!flank", desc: "Flank - Intenta dar la vuelta al equipo enemigo" },
+    { name: "!modohunter", desc: "Modo Hunter - Persigue al último enemigo con todo" },
+    { name: "!solopistol", desc: "Solo Pistol - Solo pistola" },
+    { name: "!fakerotate", desc: "Rotación Fake - Iniciar rotación y volver al sitio original" },
+    { name: "!modonovato", desc: "Modo Novato - Juega como si fuera nuevo: camina lento, apunta mal" },
+    { name: "!teabag", desc: "Teabag - Hace teabag al enemigo caído si gana el duelo" },
+    { name: "!bailar", desc: "Bailar - Hace spam de movimiento como si bailara" },
+    { name: "!noscope", desc: "No Scope - Solo puede disparar sin apuntar" },
+    { name: "!mirarpared", desc: "Mirar Pared - Mira una pared durante 5 segundos" },
+    { name: "!rotar", desc: "Rotar - El NPC debe cambiar de sitio sin importar contexto" },
+    { name: "!noplantar", desc: "No plantar - Tiene spike pero no puede plantar por 10 seg" },
+    { name: "!correrbase", desc: "Correr a base - El NPC regresa a su base por 5 segundos" }
+  ];
+
+  // Reemplaza estas líneas en el script principal:
+let start = 0;
+let scrollActivo = true;
+let currentPage = 0;
+const showCount = 10; // número de comandos por página
+
+function updateList() {
+  const listEl = document.getElementById('commandList');
+  listEl.innerHTML = '';
+
+  const totalPages = Math.ceil(comandos.length / showCount);
+  const start = currentPage * showCount;
+  const end = Math.min(start + showCount, comandos.length);
+
+  for (let i = start; i < end; i++) {
+    const cmd = comandos[i];
+    const div = document.createElement('div');
+    div.className = 'command';
+    div.innerHTML = `<div class="command-name">${cmd.name}</div>
+                     <div class="command-desc">${cmd.desc}</div>`;
+    listEl.appendChild(div);
+  }
+
+  document.getElementById('pageIndicator').textContent = `${currentPage + 1} / ${totalPages}`;
+}
+
+function nextPage() {
+  const totalPages = Math.ceil(comandos.length / showCount);
+  currentPage = (currentPage + 1) % totalPages;
+  updateList();
+}
+
+function prevPage() {
+  const totalPages = Math.ceil(comandos.length / showCount);
+  currentPage = (currentPage - 1 + totalPages) % totalPages;
+  updateList();
+}
+
+function mostrarMas() {
+  showCount += 5;
+  if (showCount >= comandos.length) {
+    showCount = comandos.length;
+  }
+  scrollActivo = false;
+  updateList();
+}
+
+updateList();
+
+  </script>
+
+
+
+<script src="https://static.app/js/static.js" type="text/javascript"></script>
+</body>
+</html>
